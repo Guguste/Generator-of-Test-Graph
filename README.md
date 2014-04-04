@@ -1,4 +1,4 @@
-Projet-Tuteur-
+Tuteur-Project
 ==============
 
 Generator of test graph
