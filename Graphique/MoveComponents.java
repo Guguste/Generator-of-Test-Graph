@@ -9,6 +9,8 @@ Comme tes composants sont déplaçables à des coordonnées quelquonques,
 il faudra supprimer le layout manager, qui justement sert à gérer automatiquement les coordonnées (et les tailles) des composants.
 Personnellement, j'utilise une bibliothèque qui me permet de gérer ça beaucoup plus facilement, et beaucoup d'autres choses, qui s'appelle Piccolo2D
 
+Une base trouvée sur le net.
+
 */
 
 import java.awt.Color;
