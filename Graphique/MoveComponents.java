@@ -44,7 +44,7 @@ public class MoveComponents extends JPanel {
     private JComponent createComponent() {
         JPanel component=new JPanel(); // ici on peut faire n'importe quel JComponent, JLabel, par exemple
         component.setLocation((int)(Math.random()*150), (int)(Math.random()*150)); // position aléatoire
-        //component.setSize(10+(int)(Math.random()*100), 10+(int)(Math.random()*100)); // taille aléatoire
+        component.setSize(10+(int)(Math.random()*100), 10+(int)(Math.random()*100)); // taille aléatoire
         component.setBackground(Color.RED /*COLORS[(int)(Math.random()*COLORS.length)]*/ ); // couleur aléatoire
         component.setEnabled(false); // les composants ne doivent pas intercepter la souris
         return component;
