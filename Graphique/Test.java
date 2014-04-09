@@ -11,6 +11,10 @@
      cliquez sur le "+" et ajouter la lib se trouvant dans le dossier précédemment téléchargé
 */
 
+/*
+    User Manual : http://jgraph.github.io/mxgraph/docs/manual_javavis.html
+*/
+
 import javax.swing.JFrame;
 
 import com.mxgraph.model.mxCell;
