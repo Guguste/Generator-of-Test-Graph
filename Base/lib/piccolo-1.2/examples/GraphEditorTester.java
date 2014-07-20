@@ -1,4 +1,5 @@
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -23,10 +24,20 @@ public class GraphEditorTester extends JFrame {
 	    
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         graphEditor = new GraphEditor(500, 500);
-
+        JPanel mainPane = new JPanel();
+        
         JPanel boutonPane = new JPanel();
+        boutonPane.setLayout(new GridLayout(2, 1));
         
         JButton newNodeButton = new JButton("New Node");
+        newNodeButton.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent event){
+            	graphEditor.stopSaveNodes();
+            	graphEditor.newNode();
+            }
+          });
+        
+        JButton deleteNodeButton = new JButton("Delete Node");
         newNodeButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent event){
             	graphEditor.stopSaveNodes();
@@ -43,8 +54,9 @@ public class GraphEditorTester extends JFrame {
         
         boutonPane.add(newNodeButton);
         boutonPane.add(newEdgesButton);
-        boutonPane.add(graphEditor);
-        getContentPane().add(boutonPane);
+        mainPane.add(boutonPane);
+        mainPane.add(graphEditor);
+        getContentPane().add(mainPane);
         pack();
         setVisible(true);
         

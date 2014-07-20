@@ -98,7 +98,7 @@ public class GraphEditor extends PCanvas {
             
             public void mouseClicked(PInputEvent e){
             	super.mouseClicked(e);
-            	if(saveNodes){
+            	if(saveNodes && e.getPickedNode() instanceof PPath){
             		if(nbClick==0){
             			nbClick++;
             			node1=e.getPickedNode();
@@ -113,11 +113,9 @@ public class GraphEditor extends PCanvas {
             }
             
             protected void startDrag(PInputEvent e) {
-
             		super.startDrag(e);
             		e.setHandled(true);
                 	e.getPickedNode().moveToFront();
-                
             }
             
             protected void drag(PInputEvent e) {
@@ -132,35 +130,25 @@ public class GraphEditor extends PCanvas {
         });
     }
 	public void newNode(){
-        Random random = new Random();
+		Summit node = new Summit();
+        nodeLayer.addChild(node.getNode());
 
-        PPath node = PPath.createEllipse(1, 1, 30, 30);
-        PText text = new PText("blop");
-        text.setBounds(1, 1, 20, 20);
-        node.addAttribute("edges", new ArrayList());
-        nodeLayer.addChild(node);
-        nodeLayer.addChild(text);
 	}
 	
 	public void newEdge(){
-        PPath edge = new PPath();
-        ((ArrayList<PPath>)this.node1.getAttribute("edges")).add(edge);
-        ((ArrayList<PPath>)this.node2.getAttribute("edges")).add(edge);
-        edge.addAttribute("nodes", new ArrayList());
-        ((ArrayList<PNode>)edge.getAttribute("nodes")).add(this.node1);
-        ((ArrayList<PNode>)edge.getAttribute("nodes")).add(this.node2);
-        edgeLayer.addChild(edge);
-        updateEdge(edge);
+        
+        // node 1 ans 2 are save in the function named  mouseClicked 
+	    Edges edge = new Edges(node1,node2);
+        edgeLayer.addChild(edge.getEdge());
+   
+        updateEdge(edge.getEdge());
 	}
-	
 	public void startSaveNodes(){
 		this.saveNodes=true;
 	}
 	public void stopSaveNodes(){
 		this.saveNodes=false;
 	}
-	
-
     public void updateEdge(PPath edge) {
         // Note that the node's "FullBounds" must be used
         // (instead of just the "Bounds") because the nodes
