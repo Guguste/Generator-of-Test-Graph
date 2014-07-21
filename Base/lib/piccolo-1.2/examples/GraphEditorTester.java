@@ -27,33 +27,36 @@ public class GraphEditorTester extends JFrame {
         JPanel mainPane = new JPanel();
         
         JPanel boutonPane = new JPanel();
-        boutonPane.setLayout(new GridLayout(2, 1));
+        boutonPane.setLayout(new GridLayout(3, 1));
         
         JButton newNodeButton = new JButton("New Node");
         newNodeButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent event){
             	graphEditor.stopSaveNodes();
+            	graphEditor.stopDeleteNode();
             	graphEditor.newNode();
             }
           });
         
         JButton deleteNodeButton = new JButton("Delete Node");
-        newNodeButton.addActionListener(new ActionListener(){
+        deleteNodeButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent event){
             	graphEditor.stopSaveNodes();
-            	graphEditor.newNode();
+            	graphEditor.deleteNode();
             }
           });
         
         JButton newEdgesButton = new JButton("New Edges");
         newEdgesButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent event){
+              graphEditor.stopDeleteNode();
               graphEditor.startSaveNodes();
             }
           });
         
         boutonPane.add(newNodeButton);
         boutonPane.add(newEdgesButton);
+        boutonPane.add(deleteNodeButton);
         mainPane.add(boutonPane);
         mainPane.add(graphEditor);
         getContentPane().add(mainPane);

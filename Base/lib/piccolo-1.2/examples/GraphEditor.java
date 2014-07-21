@@ -20,6 +20,7 @@ public class GraphEditor extends PCanvas {
 	private static final long serialVersionUID = 1L;
 	private PLayer nodeLayer;
 	private boolean saveNodes=false;
+	private boolean deleteNodes=false;
 	private int nbClick=0;
 	private PNode node1;
 	private PNode node2;
@@ -27,8 +28,6 @@ public class GraphEditor extends PCanvas {
 	
 	public GraphEditor(int width, int height) {
         setPreferredSize(new Dimension(width, height));
-        int numNodes = 10;
-        int numEdges = 10;
 
         // Initialize, and create a layer for the edges
         // (always underneath the nodes)
@@ -36,51 +35,15 @@ public class GraphEditor extends PCanvas {
         edgeLayer = new PLayer();
         getRoot().addChild(edgeLayer);
         getCamera().addLayer(0, edgeLayer);
-        Random random = new Random();
 
-        // Create some random nodes
-        // Each node's attribute set has an
-        // ArrayList to store associated edges
-        for (int i = 0; i < numNodes; i++) {
-            float x = random.nextInt(width);
-            float y = random.nextInt(height);
-            PPath node = PPath.createEllipse(x, y, 30, 30);
-            node.addAttribute("edges", new ArrayList());
-            
-            nodeLayer.addChild(node);
-        }
-        
-        // Create some random edges
-        // Each edge's attribute set has an
-        // ArrayList to store associated nodes
-        for (int i = 0; i < numEdges; i++) {
-            int n1 = random.nextInt(numNodes);
-            int n2 = random.nextInt(numNodes);
-
-            // Make sure we have two distinct nodes.
-            while (n1 == n2) {
-                n2 = random.nextInt(numNodes);
-            }
-            
-            PNode node1 = nodeLayer.getChild(n1);
-            PNode node2 = nodeLayer.getChild(n2);
-            
-            PPath edge = new PPath();
-            ((ArrayList<PPath>)node1.getAttribute("edges")).add(edge);
-            ((ArrayList<PPath>)node2.getAttribute("edges")).add(edge);
-            edge.addAttribute("nodes", new ArrayList());
-            ((ArrayList<PNode>)edge.getAttribute("nodes")).add(node1);
-            ((ArrayList<PNode>)edge.getAttribute("nodes")).add(node2);
-            edgeLayer.addChild(edge);
-            updateEdge(edge);
-        }
-        
         nodeLayer.addInputEventListener(new PDragEventHandler() {
             {
                 PInputEventFilter filter = new PInputEventFilter();
                 filter.setOrMask(InputEvent.BUTTON1_MASK | InputEvent.BUTTON3_MASK);
                 setEventFilter(filter);
-            }
+            }        int numNodes = 10;
+            int numEdges = 10;
+
 
             public void mouseEntered(PInputEvent e) {
                 super.mouseEntered(e);
@@ -109,6 +72,31 @@ public class GraphEditor extends PCanvas {
             			newEdge();
             		}
             	}
+            	else if(deleteNodes && e.getPickedNode() instanceof PPath){
+            		System.out.print("blop");
+            		PNode removedNode = e.getPickedNode();
+            		nodeLayer.removeChild(removedNode);
+            		
+            		// List of edges which link with removed node
+            		ArrayList edges = (ArrayList) removedNode.getAttribute("edges");
+            		
+            		for(int i=0;i<edges.size();i++){            	
+            			PPath edge=(PPath) edges.get(i);
+            			ArrayList nodesList = (ArrayList) edge.getAttribute("nodes");
+            			
+           				PNode nodeElem= (PNode) nodesList.get(0);
+           				ArrayList nodeElemListEdges = (ArrayList)nodeElem.getAttribute("edges");
+           				nodeElemListEdges.remove(edge);
+           				
+           				PNode nodeElem2= (PNode) nodesList.get(1);
+           				ArrayList nodeElemListEdges2 = (ArrayList)nodeElem.getAttribute("edges");
+           				nodeElemListEdges2.remove(edge);
+           				System.out.println(i);
+           				edge.reset();            				
+            			}
+            		}
+
+            	
   
             }
             
@@ -129,26 +117,29 @@ public class GraphEditor extends PCanvas {
             }
         });
     }
+	
 	public void newNode(){
 		Summit node = new Summit();
         nodeLayer.addChild(node.getNode());
-
 	}
 	
-	public void newEdge(){
-        
-        // node 1 ans 2 are save in the function named  mouseClicked 
+	public void deleteNode(){this.deleteNodes=true;System.out.println("delete");}
+	public void stopDeleteNode(){this.deleteNodes=false;System.out.println("stop delete");}
+	public void startSaveNodes(){this.saveNodes=true;System.out.println("save node");}
+	public void stopSaveNodes(){this.saveNodes=false;}
+	
+	public void newEdge(){        
+        // node 1 and 2 are save in the function named  mouseClicked 
 	    Edges edge = new Edges(node1,node2);
-        edgeLayer.addChild(edge.getEdge());
-   
+        edgeLayer.addChild(edge.getEdge());   
         updateEdge(edge.getEdge());
+    
 	}
-	public void startSaveNodes(){
-		this.saveNodes=true;
-	}
-	public void stopSaveNodes(){
-		this.saveNodes=false;
-	}
+	
+
+	
+
+	
     public void updateEdge(PPath edge) {
         // Note that the node's "FullBounds" must be used
         // (instead of just the "Bounds") because the nodes
