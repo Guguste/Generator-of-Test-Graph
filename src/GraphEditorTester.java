@@ -91,6 +91,7 @@ public class GraphEditorTester extends JFrame {
 			public void actionPerformed(ActionEvent event) {
 				graphEditor.stopDeleteNode();
 				graphEditor.startSaveNodes();
+				mainPane.repaint();
 			}
 		});
 

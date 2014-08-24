@@ -11,6 +11,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
@@ -21,6 +23,7 @@ import edu.umd.cs.piccolo.PNode;
 import edu.umd.cs.piccolo.event.PDragEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
 import edu.umd.cs.piccolo.event.PInputEventFilter;
+import edu.umd.cs.piccolo.event.PInputEventListener;
 import edu.umd.cs.piccolo.nodes.PPath;
 //import edu.umd.cs.piccolox.event.PStyledTextEventHandler;
 //import edu.umd.cs.piccolox.nodes.PStyledText;
@@ -39,6 +42,7 @@ public class GraphEditor extends PCanvas {
 	private PNode node1;
 	private PNode node2;
 	private PLayer edgeLayer;
+	private JFrame popup = new JFrame();
 
 	private HashMap<PPath, Edges> listOfEdge = new HashMap<PPath, Edges>();
 	private HashMap<PPath, Summit> listOfSummit = new HashMap<PPath, Summit>();
@@ -84,7 +88,7 @@ public class GraphEditor extends PCanvas {
 
 			public void mouseClicked(PInputEvent e) {
 				super.mouseClicked(e);
-
+				
 				if (saveNodes && e.getPickedNode() instanceof PPath) {
 					if (nbClick == 0) {
 						nbClick++;
@@ -98,8 +102,6 @@ public class GraphEditor extends PCanvas {
 						nbClick = 0;
 						newEdge();
 					}
-				} else if (e.getPickedNode() instanceof PText) {
-
 				} else if (deleteNodes && e.getPickedNode() instanceof PPath) {
 					PNode removedNode = e.getPickedNode();
 					(listOfSummit.get(removedNode)).delete(nodeLayer,
