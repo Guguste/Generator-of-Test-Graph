@@ -65,14 +65,18 @@ public class GraphEditor extends PCanvas {
 			public void mouseEntered(PInputEvent e) {
 				super.mouseEntered(e);
 				if (e.getButton() == MouseEvent.NOBUTTON) {
-					e.getPickedNode().setPaint(Color.RED);
+					if (!(e.getPickedNode() == node1 && nbClick > 0))
+						e.getPickedNode().setPaint(Color.RED);
 				}
 			}
 
 			public void mouseExited(PInputEvent e) {
 				super.mouseExited(e);
 				if (e.getButton() == MouseEvent.NOBUTTON) {
-					if (changeColor == false) {
+					if (e.getPickedNode() != node1 && nbClick > 0) {
+						e.getPickedNode().setPaint(Color.WHITE);
+					}
+					else if (nbClick == 0){
 						e.getPickedNode().setPaint(Color.WHITE);
 					}
 				}
@@ -111,7 +115,7 @@ public class GraphEditor extends PCanvas {
 				} else {
 					changeColor = false;
 					node1.setPaint(Color.WHITE);
-					node2.setPaint(Color.WHITE);
+					node2.setPaint(Color.RED);
 				}
 			}
 
