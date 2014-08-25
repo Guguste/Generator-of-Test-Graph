@@ -34,7 +34,6 @@ public class Edges {
 		text.addInputEventListener(new PInputEventListener(){
 			public void processEvent(PInputEvent e, int descriptor) {
 				if (e.getPickedNode() instanceof PText && descriptor == 500) {
-					System.out.println(descriptor);
 					updateText((PText)e.getPickedNode());
 				}
 			}
@@ -57,7 +56,13 @@ public class Edges {
 	
 	public void updateText(PText ptext) {
 		String newText = JOptionPane.showInputDialog(popup, "What text do you want to put on this edge ?", null);
+		double X = ptext.getX();
+		double Y = ptext.getY();
+		ptext.resetBounds();
 		this.textToPut = newText;
+		ptext.setText(textToPut);
+		ptext.setX(X);
+		ptext.setY(Y);
 	}
 
 	public PText getText() {

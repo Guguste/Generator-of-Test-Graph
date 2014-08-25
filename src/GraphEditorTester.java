@@ -25,7 +25,8 @@ public class GraphEditorTester extends JFrame {
 	private GraphEditor graphEditor;
 	private JComboBox<String> listMenu;
 	private DefaultComboBoxModel<String> contentMenu = new DefaultComboBoxModel<String>();
-
+	final JSlider sizeOfNodes;
+	
 	public GraphEditorTester() {
 		setTitle("Piccolo2D Graph Editor");
 
@@ -106,7 +107,7 @@ public class GraphEditorTester extends JFrame {
 		// source :
 		// http://docs.oracle.com/javase/tutorial/uiswing/components/slider.html
 
-		final JSlider sizeOfNodes = new JSlider(JSlider.HORIZONTAL, 20, 100, 40);
+		sizeOfNodes = new JSlider(JSlider.HORIZONTAL, 20, 100, 40);
 		sizeOfNodes.setMajorTickSpacing(20);
 		sizeOfNodes.setMinorTickSpacing(5);
 		sizeOfNodes.setPaintTicks(true);
@@ -118,7 +119,6 @@ public class GraphEditorTester extends JFrame {
 			public void stateChanged(ChangeEvent e) {
 				graphEditor.changeSizeOfNodes((int) sizeOfNodes.getValue());
 				mainPane.revalidate();
-				System.out.println("Done");
 			}
 		});
 		

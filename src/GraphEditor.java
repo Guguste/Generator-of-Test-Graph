@@ -130,15 +130,13 @@ public class GraphEditor extends PCanvas {
 			protected void drag(PInputEvent e) {
 				super.drag(e);
 				if (e.getPickedNode() instanceof PPath) {
-					ArrayList edges = (ArrayList) e.getPickedNode()
-							.getAttribute("edges");
+					ArrayList edges = (ArrayList) e.getPickedNode().getAttribute("edges");
 					for (int i = 0; i < edges.size(); i++) {
 						GraphEditor.this.updateEdge((PPath) edges.get(i));
 					}
 				}
 			}
 		});
-
 	}
 
 	public void newNode() {
@@ -167,20 +165,17 @@ public class GraphEditor extends PCanvas {
 	}
 
 	public void changeSizeOfNodes(int size) {
-		System.out.println(size);
-
 		Set entry = listOfSummit.entrySet();
 		Iterator it = entry.iterator();
 		while (it.hasNext()) {
 			Map.Entry value = (Map.Entry) it.next();
-			System.out.println(value.getValue());
 			Summit s = (Summit) value.getValue();
-			s.printWidth();
-			s.setWH(size, size);
-			System.out.println("NEW");
-			s.printWidth();
+			double X = s.getNode().getX();
+			double Y = s.getNode().getY();
+			s.getNode().setBounds(X, Y, size, size);
+			s.setSliderValue(size);
+			System.out.println(X+"\t"+Y+"\t"+size);
 		}
-
 	}
 
 	public void newEdge() {

@@ -9,11 +9,10 @@ import edu.umd.cs.piccolo.nodes.PPath;
 import edu.umd.cs.piccolo.nodes.PText;
 
 public class Summit {
-
-	private float x = 10;
-	private float y = 10;
-	private float width = 40;
-	private float height = 40;
+	private double x = 10;
+	private double y = 10;
+	private double width = 40;
+	private double height = 40;
 	private PPath node;
 	private PText text;
 	private static int count = 0;
@@ -23,28 +22,22 @@ public class Summit {
 				+ (char) ((int) (48 + count++ / 26)));
 		text.setPickable(false);
 		text.centerBoundsOnPoint(30, 30);
-		node = PPath.createEllipse(x, y, width, height);
+		node = PPath.createEllipse((float)x, (float)y, (float)width, (float)height);
 		node.addAttribute("edges", new ArrayList());
 		node.addChild(text);
 	}
 
+	public void setSliderValue(double value){
+		this.width = this.height = value;
+	}
+	
 	public PPath getNode() {
 		return node;
 	}
-
-	public void setXY(float x, float y) {
-		this.x = x;
-		this.y = y;
-	}
-
-	public void setWH(float w, float h) {
-		this.width = w;
-		this.height = h;
-		System.out.println(this);
-	}
-
-	public void printWidth() {
-		System.out.println(width);
+	
+	public void reset(double x, double y, int width, int height) {
+		this.node.reset();
+		this.node.setBounds(x, y, width, height);
 	}
 
 	public void delete(PLayer nodeLayer, PLayer edgeLayer,
