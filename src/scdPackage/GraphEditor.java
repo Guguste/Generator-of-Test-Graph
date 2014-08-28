@@ -1,4 +1,4 @@
-package mainPakage;
+package scdPackage;
 
 //package Generator.src;
 
