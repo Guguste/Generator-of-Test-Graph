@@ -216,9 +216,52 @@ public class GraphEditor extends PCanvas {
 		PNode node2 = (PNode) ((ArrayList) edge.getAttribute("nodes")).get(1);
 		Point2D start = node1.getFullBoundsReference().getCenter2D();
 		Point2D end = node2.getFullBoundsReference().getCenter2D();
-		edge.reset();
-		edge.moveTo((float) start.getX(), (float) start.getY());
-		edge.lineTo((float) end.getX(), (float) end.getY());
+//		edge.reset();
+//		edge.moveTo((float) start.getX(), (float) start.getY());
+//		edge.lineTo((float) end.getX(), (float) end.getY());
+//		
+	    final Point2D p1 = node1.getFullBoundsReference().getCenter2D();
+	    final Point2D p2 = node2.getFullBoundsReference().getCenter2D();
+	    final Shape newArrow = createArrow(
+	        new Point2D.Double(p1.getX(), p1.getY()), new
+	Point2D.Double(p2.getX(),
+	            p2.getY()));
+	    edge.setPathTo(newArrow);
 		listOfEdge.get(edge).updateText(start, end);
 	}
+	 private Shape createArrow(Point2D start, Point2D end) {
+
+		    // Arrow settings.
+		    int b = 20;
+		    double theta = Math.toRadians(30);
+
+		    // Arrow Calculations.
+		    double xs = start.getX();
+		    double ys = start.getY();
+		    double xe = end.getX();
+		    double ye = end.getY();
+		    
+		    double ab = Math.sqrt(Math.pow(xe - xs,2) + Math.pow(Math.abs(ye - ys),2));
+		    double ae =  ye - ys ;
+		    double eb =  xe - xs ;
+		    double r = 20;
+		    double xend = xs + eb * (ab - r) / ab;
+		    double yend = ye + (ae * ( ab - r )/ ab) - ae;
+
+		    double alpha = Math.atan2(yend - ys, xend - xs);
+		    double dx1 = b * Math.cos(alpha + theta);
+		    double dy1 = b * Math.sin(alpha + theta);
+		    double dx2 = b * Math.cos(alpha - theta);
+		    double dy2 = b * Math.sin(alpha - theta);
+
+		    // Arrow Path.
+		    GeneralPath path = new GeneralPath();
+		    path.moveTo(xs, ys);
+		    path.lineTo(xend, yend);
+		    path.lineTo(xend - dx1, yend - dy1);
+		    path.moveTo(xend, yend);
+		    path.lineTo(xend - dx2, yend - dy2);
+
+		    return path;
+		  }
 }
