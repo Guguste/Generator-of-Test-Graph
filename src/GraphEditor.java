@@ -5,44 +5,39 @@ import java.awt.Dimension;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
-
 import edu.umd.cs.piccolo.PCanvas;
 import edu.umd.cs.piccolo.PLayer;
 import edu.umd.cs.piccolo.PNode;
 import edu.umd.cs.piccolo.event.PDragEventHandler;
 import edu.umd.cs.piccolo.event.PInputEvent;
 import edu.umd.cs.piccolo.event.PInputEventFilter;
-import edu.umd.cs.piccolo.event.PInputEventListener;
 import edu.umd.cs.piccolo.nodes.PPath;
-//import edu.umd.cs.piccolox.event.PStyledTextEventHandler;
-//import edu.umd.cs.piccolox.nodes.PStyledText;
-import edu.umd.cs.piccolo.nodes.PText;
 
-public class GraphEditor extends PCanvas {
+public class GraphEditor extends PCanvas implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private PLayer nodeLayer;
+	
 	private boolean saveNodes = false;
 	private boolean deleteNodes = false;
+	private boolean newRoad = false;
 	private boolean saveEdges = false;
 	private boolean deleteEdges = false;
-	private boolean changeColor = false;
+	
 	private int nbClick = 0;
 	private PNode node1;
 	private PNode node2;
 	private PLayer edgeLayer;
 	private JFrame popup = new JFrame();
+	
+	private ArrayList<Summit> road = new ArrayList<Summit>();
 
 	private HashMap<PPath, Edges> listOfEdge = new HashMap<PPath, Edges>();
 	private HashMap<PPath, Summit> listOfSummit = new HashMap<PPath, Summit>();
@@ -76,8 +71,8 @@ public class GraphEditor extends PCanvas {
 
 			public void mouseExited(PInputEvent e) {
 				super.mouseExited(e);
-				if (e.getButton() == MouseEvent.NOBUTTON) {
-					if (e.getPickedNode() != node1 && nbClick > 0) {
+				if (e.getButton() == MouseEvent.NOBUTTON && e.getPickedNode().getPaint()!=Color.ORANGE) {
+					if (e.getPickedNode() != node1 && nbClick > 0 ) {
 						e.getPickedNode().setPaint(Color.WHITE);
 					}
 					else if (nbClick == 0){
@@ -93,14 +88,16 @@ public class GraphEditor extends PCanvas {
 					if (nbClick == 0) {
 						nbClick++;
 						node1 = e.getPickedNode();
-						changeColor(true);
+						listOfSummit.get(node1).changeColor(true);
 					}
 
 					else {
-						node2 = e.getPickedNode();
-						changeColor(false);
+						node2 = e.getPickedNode();		
 						nbClick = 0;
+						listOfSummit.get(node2).changeColor(true);
 						newEdge();
+						listOfSummit.get(node1).changeColor(false);
+						listOfSummit.get(node2).changeColor(false);
 					}
 				} else if (deleteNodes && e.getPickedNode() instanceof PPath) {
 					PNode removedNode = e.getPickedNode();
@@ -108,16 +105,10 @@ public class GraphEditor extends PCanvas {
 							edgeLayer, listOfEdge);
 					nodeLayer.removeChild(removedNode);
 				}
-			}
-
-			protected void changeColor(boolean node) {
-				if (node) {
-					changeColor = true;
-					node1.setPaint(Color.ORANGE);
-				} else {
-					changeColor = false;
-					node1.setPaint(Color.WHITE);
-					node2.setPaint(Color.RED);
+				else if (newRoad && e.getPickedNode() instanceof PPath){//Permite to save all the node that the user select		
+					road.add(listOfSummit.get(e.getPickedNode()));
+					listOfSummit.get(e.getPickedNode()).changeColor(true);
+					System.out.print("save a node");
 				}
 			}
 
@@ -150,9 +141,11 @@ public class GraphEditor extends PCanvas {
 		System.out.println("delete node");
 	}
 
-	public void stopDeleteNode() {
+	public void reset() {
 		this.deleteNodes = false;
-		System.out.println("stop delete node");
+		this.saveNodes = false;
+		this.saveEdges = false;
+		this.deleteEdges = false;
 	}
 
 	public void startSaveNodes() {
@@ -160,21 +153,13 @@ public class GraphEditor extends PCanvas {
 		System.out.println("save node");
 	}
 
-	public void stopSaveNodes() {
-		this.saveNodes = false;
-	}
-
 	public void changeSizeOfNodes(int size) {
-		Set entry = listOfSummit.entrySet();
-		Iterator it = entry.iterator();
+		Set<Entry<PPath, Summit>> entry = listOfSummit.entrySet();
+		Iterator<Entry<PPath, Summit>> it = entry.iterator();
 		while (it.hasNext()) {
-			Map.Entry value = (Map.Entry) it.next();
+			Entry<PPath, Summit> value = it.next();
 			Summit s = (Summit) value.getValue();
-			double X = s.getNode().getX();
-			double Y = s.getNode().getY();
-			s.getNode().setBounds(X, Y, size, size);
-			s.setSliderValue(size);
-			System.out.println(X+"\t"+Y+"\t"+size);
+			s.changeBounds(size);
 		}
 	}
 
@@ -192,76 +177,30 @@ public class GraphEditor extends PCanvas {
 		System.out.println("delete edge");
 	}
 
-	public void stopDeleteEdge() {
-		this.deleteEdges = false;
-		System.out.println("stop delete edge");
-	}
-
 	public void startSaveEdges() {
 		this.saveEdges = true;
 		System.out.println("save edge");
 	}
-
-	public void stopSaveEdges() {
-		this.saveEdges = false;
+	
+	public void newRoad(){
+	if(!newRoad)
+		newRoad=true;
+	else{
+		newRoad=false;
+		System.out.print("stop saving node");
+		System.out.print(road.size());
+		newRoad=false;
+		for(int i = 0 ; i < road.size() ; road.get(i++).changeColor(false)); //Change color of the nodes which are selected to the road 
+		road.removeAll(road);	
+		}
 	}
-
+	
 	public void updateEdge(PPath edge) {
-		// Note that the node's "FullBounds" must be used
-		// (instead of just the "Bounds") because the nodes
-		// have non-identity transforms which must be included
-		// when determining their position.
-
-		PNode node1 = (PNode) ((ArrayList) edge.getAttribute("nodes")).get(0);
-		PNode node2 = (PNode) ((ArrayList) edge.getAttribute("nodes")).get(1);
-		Point2D start = node1.getFullBoundsReference().getCenter2D();
-		Point2D end = node2.getFullBoundsReference().getCenter2D();
-//		edge.reset();
-//		edge.moveTo((float) start.getX(), (float) start.getY());
-//		edge.lineTo((float) end.getX(), (float) end.getY());
-//		
 	    final Point2D p1 = node1.getFullBoundsReference().getCenter2D();
 	    final Point2D p2 = node2.getFullBoundsReference().getCenter2D();
-	    final Shape newArrow = createArrow(
-	        new Point2D.Double(p1.getX(), p1.getY()), new
-	Point2D.Double(p2.getX(),
-	            p2.getY()));
-	    edge.setPathTo(newArrow);
-		listOfEdge.get(edge).updateText(start, end);
+	    listOfEdge.get(edge).upDateArrow( new Point2D.Double(p1.getX(), p1.getY()), new	Point2D.Double(p2.getX(), p2.getY()));	    
+		listOfEdge.get(edge).updateText(p1, p2);
 	}
-	 private Shape createArrow(Point2D start, Point2D end) {
 
-		    // Arrow settings.
-		    int b = 20;
-		    double theta = Math.toRadians(30);
 
-		    // Arrow Calculations.
-		    double xs = start.getX();
-		    double ys = start.getY();
-		    double xe = end.getX();
-		    double ye = end.getY();
-		    
-		    double ab = Math.sqrt(Math.pow(xe - xs,2) + Math.pow(Math.abs(ye - ys),2));
-		    double ae =  ye - ys ;
-		    double eb =  xe - xs ;
-		    double r = 20;
-		    double xend = xs + eb * (ab - r) / ab;
-		    double yend = ye + (ae * ( ab - r )/ ab) - ae;
-
-		    double alpha = Math.atan2(yend - ys, xend - xs);
-		    double dx1 = b * Math.cos(alpha + theta);
-		    double dy1 = b * Math.sin(alpha + theta);
-		    double dx2 = b * Math.cos(alpha - theta);
-		    double dy2 = b * Math.sin(alpha - theta);
-
-		    // Arrow Path.
-		    GeneralPath path = new GeneralPath();
-		    path.moveTo(xs, ys);
-		    path.lineTo(xend, yend);
-		    path.lineTo(xend - dx1, yend - dy1);
-		    path.moveTo(xend, yend);
-		    path.lineTo(xend - dx2, yend - dy2);
-
-		    return path;
-		  }
 }

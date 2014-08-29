@@ -6,7 +6,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -18,6 +17,8 @@ import javax.swing.JSlider;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 public class GraphEditorTester extends JFrame {
 
@@ -41,7 +42,7 @@ public class GraphEditorTester extends JFrame {
 		graphEditor = new GraphEditor(500, 500);
 		final JPanel mainPane = new JPanel();
 		JPanel boutonPane = new JPanel();
-		boutonPane.setLayout(new GridLayout(7, 1));
+		boutonPane.setLayout(new GridLayout(8, 1));
 
 		/* Replaced with JMenu
 		 * 
@@ -65,16 +66,14 @@ public class GraphEditorTester extends JFrame {
 		JButton moveButton = new JButton("Move Element");
 		moveButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				graphEditor.stopSaveNodes();
-				graphEditor.stopDeleteNode();
+				graphEditor.reset();
 			}
 		});
 
 		JButton newNodeButton = new JButton("New Node");
 		newNodeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				graphEditor.stopSaveNodes();
-				graphEditor.stopDeleteNode();
+				graphEditor.reset();
 				graphEditor.newNode();
 			}
 		});
@@ -82,7 +81,7 @@ public class GraphEditorTester extends JFrame {
 		JButton deleteNodeButton = new JButton("Delete Node");
 		deleteNodeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				graphEditor.stopSaveNodes();
+				graphEditor.reset();
 				graphEditor.deleteNode();
 			}
 		});
@@ -90,7 +89,7 @@ public class GraphEditorTester extends JFrame {
 		JButton newEdgesButton = new JButton("New Edges");
 		newEdgesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				graphEditor.stopDeleteNode();
+				graphEditor.reset();
 				graphEditor.startSaveNodes();
 				mainPane.repaint();
 			}
@@ -99,8 +98,17 @@ public class GraphEditorTester extends JFrame {
 		JButton deleteEdgeButton = new JButton("Delete Edge");
 		deleteNodeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
-				graphEditor.stopSaveEdges();
+				graphEditor.reset();
 				graphEditor.deleteEdge();
+			}
+		});
+		
+		JButton newRoadButton = new JButton("New Road");
+		newRoadButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				graphEditor.reset();
+				graphEditor.newRoad();
+				
 			}
 		});
 
@@ -125,15 +133,49 @@ public class GraphEditorTester extends JFrame {
 		JPanel panelBar = new JPanel();
 		panelBar.setLayout(new BorderLayout());
 		JMenuBar menuBar = new JMenuBar();
+		
 		JMenu file = new JMenu("File");
 		JMenu edit = new JMenu("Edit");
-
+		
 		JMenuItem open = new JMenuItem("Open");
-		JMenuItem save = new JMenuItem("Save");
-
+		final JMenuItem save = new JMenuItem("Save");
+		
+		
 		file.add(open);
 		file.add(save);
-		
+		save.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+							
+			}	    
+		      });
+		open.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+						
+			}	    
+		      });
+		file.addMenuListener( new MenuListener (){
+
+			@Override
+			public void menuDeselected(MenuEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void menuCanceled(MenuEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void menuSelected(MenuEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 		menuBar.add(file);
 		menuBar.add(edit);
 		
@@ -144,6 +186,7 @@ public class GraphEditorTester extends JFrame {
 		boutonPane.add(newEdgesButton);
 		boutonPane.add(deleteNodeButton);
 		boutonPane.add(deleteEdgeButton);
+		boutonPane.add(newRoadButton);
 		boutonPane.add(sizeOfNodes);
 
 		//mainPane.setLayout(new BorderLayout());
@@ -161,4 +204,5 @@ public class GraphEditorTester extends JFrame {
 	public static void main(String args[]) {
 		new GraphEditorTester();
 	}
+
 }

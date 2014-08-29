@@ -1,5 +1,7 @@
 //package Generator.src;
 
+import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -8,29 +10,21 @@ import edu.umd.cs.piccolo.PNode;
 import edu.umd.cs.piccolo.nodes.PPath;
 import edu.umd.cs.piccolo.nodes.PText;
 
-public class Summit {
-	private double x = 10;
-	private double y = 10;
-	private double width = 40;
-	private double height = 40;
+public class Summit implements Serializable{
+	private static final int defaulXY = 10;
+	private static double size=40;
 	private PPath node;
 	private PText text;
 	private static int count = 0;
 
 	public Summit() {
-		text = new PText("" + (char) (65 + (int) (count % 26))
-				+ (char) ((int) (48 + count++ / 26)));
+		text = new PText("" + (char) (65 + (int) (count % 26)) + (char) ((int) (48 + count++ / 26)));
 		text.setPickable(false);
 		text.centerBoundsOnPoint(30, 30);
-		node = PPath.createEllipse((float)x, (float)y, (float)width, (float)height);
+		node = PPath.createEllipse((float)defaulXY, (float)defaulXY, (float)size, (float)size);
 		node.addAttribute("edges", new ArrayList());
 		node.addChild(text);
-	}
-
-	public void setSliderValue(double value){
-		this.width = this.height = value;
-	}
-	
+	}	
 	public PPath getNode() {
 		return node;
 	}
@@ -39,14 +33,20 @@ public class Summit {
 		this.node.reset();
 		this.node.setBounds(x, y, width, height);
 	}
+	
+	public void changeBounds(int size){
+		this.size=size;
+		double X = node.getX();
+		double Y = node.getY();
+		node.setBounds(X, Y, size, size);		
+		text.centerBoundsOnPoint(X + size/2 , Y + size/2);
+
+
+	}
 
 	public void delete(PLayer nodeLayer, PLayer edgeLayer,
 			HashMap<PPath, Edges> listOfEdge) {
-		ArrayList edges = (ArrayList) node.getAttribute("edges"); // List of
-																	// nodes
-																	// that we
-																	// want to
-																	// delete
+		ArrayList edges = (ArrayList) node.getAttribute("edges"); // List of nodes that we want to  delete
 
 		for (int i = edges.size() - 1; i >= 0; i--) {
 
@@ -74,6 +74,13 @@ public class Summit {
 			listOfEdge.remove(edge);
 
 			System.out.println(edges.size());
+		}
+	}
+	public void changeColor(boolean changeColor) {
+		if (changeColor) {
+			node.setPaint(Color.ORANGE);
+		} else {
+			node.setPaint(Color.WHITE);
 		}
 	}
 }
