@@ -103,12 +103,17 @@ public class GraphEditorTester extends JFrame {
 			}
 		});
 		
-		JButton newRoadButton = new JButton("New Road");
+		final JButton newRoadButton = new JButton("New control way");
 		newRoadButton.addActionListener(new ActionListener() {
+			private boolean isClicked=false;
 			public void actionPerformed(ActionEvent event) {
 				graphEditor.reset();
 				graphEditor.newRoad();
-				
+				isClicked = !isClicked ? true : false;
+				if(isClicked)
+					newRoadButton.setText("Save control way");
+				else
+					newRoadButton.setText("New control way");
 			}
 		});
 

@@ -106,9 +106,15 @@ public class GraphEditor extends PCanvas implements Serializable {
 					nodeLayer.removeChild(removedNode);
 				}
 				else if (newRoad && e.getPickedNode() instanceof PPath){//Permite to save all the node that the user select		
+					if(road.size()>0){
+						PPath edge = road.get(road.size()-1).haveLinkWhith((PPath) e.getPickedNode());
+						if(edge != null){
+							listOfEdge.get(edge).changeColor(true);
+						}						
+					}
 					road.add(listOfSummit.get(e.getPickedNode()));
-					listOfSummit.get(e.getPickedNode()).changeColor(true);
-					System.out.print("save a node");
+					listOfSummit.get(e.getPickedNode()).changeColor(true);					
+					System.out.println("save a node");
 				}
 			}
 
@@ -161,6 +167,7 @@ public class GraphEditor extends PCanvas implements Serializable {
 			Summit s = (Summit) value.getValue();
 			s.changeBounds(size);
 		}
+		fullUpdateEdge();
 	}
 
 	public void newEdge() {
@@ -187,19 +194,44 @@ public class GraphEditor extends PCanvas implements Serializable {
 		newRoad=true;
 	else{
 		newRoad=false;
-		System.out.print("stop saving node");
-		System.out.print(road.size());
-		newRoad=false;
-		for(int i = 0 ; i < road.size() ; road.get(i++).changeColor(false)); //Change color of the nodes which are selected to the road 
-		road.removeAll(road);	
+		
+		Iterator<Summit> it = road.iterator();
+		Summit sp=null;//previous node
+		Summit s= it.hasNext()?it.next():null;//Current node on the list
+		while(it.hasNext()){
+			 //Change color of the nodes which are selected to the road 
+			if(sp!=null){
+				sp.changeColor(false);
+				PPath edge = sp.haveLinkWhith(s.getNode());//getting of the edge between previous node and current node
+				listOfEdge.get(edge).changeColor(false);
+			}	
+			sp=s;
+			s=it.next();
+			s.changeColor(false);
+		}
+		PPath edge = sp.haveLinkWhith(s.getNode());
+		listOfEdge.get(edge).changeColor(false);
+		road.removeAll(road);	//reinitialisation of the listRoad which contain  the node which are selected
 		}
 	}
 	
-	public void updateEdge(PPath edge) {
+	public void updateEdge(PPath edge) {//This function repaint or creant One edges 
 	    final Point2D p1 = node1.getFullBoundsReference().getCenter2D();
 	    final Point2D p2 = node2.getFullBoundsReference().getCenter2D();
 	    listOfEdge.get(edge).upDateArrow( new Point2D.Double(p1.getX(), p1.getY()), new	Point2D.Double(p2.getX(), p2.getY()));	    
 		listOfEdge.get(edge).updateText(p1, p2);
+	}
+	
+	public void fullUpdateEdge(){//This function repaint all the edges when the user modify the size of the nodes
+		Set<Entry<PPath, Edges>> entry = listOfEdge.entrySet();
+		Iterator<Entry<PPath, Edges>> it = entry.iterator();
+		while (it.hasNext()) {
+			Entry<PPath, Edges> value = it.next();
+			Edges s = (Edges) value.getValue();
+			node1=(PNode) ((ArrayList) (s.getEdge().getAttribute("nodes"))).get(0);
+			node2=(PNode) ((ArrayList) (s.getEdge().getAttribute("nodes"))).get(1);
+			updateEdge(s.getEdge());
+		}
 	}
 
 

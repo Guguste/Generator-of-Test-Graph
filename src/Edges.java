@@ -97,7 +97,7 @@ public class Edges implements Serializable{
 	    double ab = Math.sqrt(Math.pow(xe - xs,2) + Math.pow(Math.abs(ye - ys),2));
 	    double ae =  ye - ys ;
 	    double eb =  xe - xs ;
-	    double r = 20;
+	    double r = Summit.getSize()/2;
 	    double xend = xs + eb * (ab - r) / ab;
 	    double yend = ye + (ae * ( ab - r )/ ab) - ae;
 
@@ -118,11 +118,11 @@ public class Edges implements Serializable{
 	    edge.setPathTo(path);
 	  }
 	public void changeColor(boolean changeColor) {
-//		if (changeColor) {
-//			edge.setPaint(Color.ORANGE);
-//		} else {
-//			edge.setPaint(Color.WHITE);
-//		}
+		if (changeColor) {
+			edge.setPaint(Color.ORANGE);
+		} else {
+			edge.setPaint(Color.WHITE);
+		}
 		System.out.println("blopy");
 	}
 }
