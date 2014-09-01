@@ -82,7 +82,7 @@ public class GraphEditorTester extends JFrame {
 		deleteNodeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				graphEditor.reset();
-				graphEditor.deleteNode();
+				graphEditor.setAction("deleteNode");
 			}
 		});
 
@@ -90,7 +90,7 @@ public class GraphEditorTester extends JFrame {
 		newEdgesButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				graphEditor.reset();
-				graphEditor.startSaveNodes();
+				graphEditor.setAction("saveNodes");
 				mainPane.repaint();
 			}
 		});
@@ -99,7 +99,6 @@ public class GraphEditorTester extends JFrame {
 		deleteNodeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				graphEditor.reset();
-				graphEditor.deleteEdge();
 			}
 		});
 		
@@ -107,13 +106,17 @@ public class GraphEditorTester extends JFrame {
 		newRoadButton.addActionListener(new ActionListener() {
 			private boolean isClicked=false;
 			public void actionPerformed(ActionEvent event) {
-				graphEditor.reset();
-				graphEditor.newRoad();
+	
 				isClicked = !isClicked ? true : false;
-				if(isClicked)
+				if(isClicked){
 					newRoadButton.setText("Save control way");
-				else
+					graphEditor.reset();
+					graphEditor.setAction("newRoad");
+					}
+				else{
 					newRoadButton.setText("New control way");
+					graphEditor.newRoad();
+					}
 			}
 		});
 

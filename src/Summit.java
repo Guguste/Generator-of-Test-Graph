@@ -26,6 +26,14 @@ public class Summit implements Serializable{
 		node.addAttribute("edges", new ArrayList());
 		node.addChild(text);
 	}	
+	public Summit(String title,int X,int Y) {
+		text = new PText(title);
+		text.setPickable(false);
+		text.centerBoundsOnPoint(size/2+X, size/2+Y);
+		node = PPath.createEllipse((float)X, (float)Y, (float)size, (float)size);
+		node.addAttribute("edges", new ArrayList<PNode>());
+		node.addChild(text);
+	}
 	public PPath getNode(){return node;}
 	public static double getSize(){return size;}
 	
@@ -79,7 +87,7 @@ public class Summit implements Serializable{
 	}
 	
 	//This function search if an edge is betwin two node and he return null if he don't exist and the node otherwise
-	public PPath haveLinkWhith(PPath node2){
+	public PPath haveLinkWhith(PNode node2){
 		ArrayList listEdge = ((ArrayList<PPath>) node.getAttribute("edges"));
 		Iterator<PPath> it = listEdge.iterator();
 		
@@ -91,5 +99,9 @@ public class Summit implements Serializable{
 				return s;
 		}
 		return null;
+	}
+	
+	public String getText(){
+		return text.getText();
 	}
 }
