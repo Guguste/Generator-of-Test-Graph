@@ -14,6 +14,12 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import java.io.*;
+import java.awt.*;
+import javax.swing.*;
+import javax.imageio.*;
+import java.awt.image.*;
+
 public class GraphEditorTester extends JFrame {
 
         private static final long serialVersionUID = 1L;
@@ -96,13 +102,32 @@ public class GraphEditorTester extends JFrame {
             }
           });
         
-        JButton deleteEdgeButton = new JButton("Delete Edge");
+        /*JButton deleteEdgeButton = new JButton("Delete Edge");
         deleteNodeButton.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent event){
                 graphEditor.stopSaveEdges();
                 graphEditor.deleteEdge();
             }
-          });
+          });*/
+        
+        JButton buttonPrint = new JButton("Make Image");
+        buttonPrint.addActionListener(new ActionListener(){
+        public void actionPerformed(ActionEvent ae){
+          JFrame win = (JFrame)SwingUtilities.getWindowAncestor(mainPane);
+          Dimension size = win.getSize();
+          BufferedImage image = (BufferedImage)win.createImage(size.width, size.height);
+          Graphics g = image.getGraphics();
+          win.paint(g);
+          g.dispose();
+          try      {
+            ImageIO.write(image, "jpg", new File("TryToMakeAnImage.jpg"));
+            System.out.println("I print an Image");
+          }
+          catch (IOException e){
+            e.printStackTrace();
+          }
+        }
+      });
         
         // source : http://docs.oracle.com/javase/tutorial/uiswing/components/slider.html
         
@@ -130,6 +155,7 @@ public class GraphEditorTester extends JFrame {
         boutonPane.add(newCurvedEdgesButton);
         boutonPane.add(deleteNodeButton);
         //boutonPane.add(deleteEdgeButton);
+        boutonPane.add(buttonPrint);
         boutonPane.add(sizeOfNodes);
         
         mainPane.add(boutonPane);
@@ -138,6 +164,8 @@ public class GraphEditorTester extends JFrame {
         pack();
         setVisible(true);
     }
+        
+    
 
     public static void main(String args[]) {
         new GraphEditorTester();
