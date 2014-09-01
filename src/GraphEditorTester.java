@@ -35,11 +35,14 @@ public class GraphEditorTester extends JFrame {
 				.getScreenSize();
 		int hauteur = (int) tailleEcran.getHeight();
 		int largeur = (int) tailleEcran.getWidth();
+		//System.out.println("largeur :" + largeur + " hauteur :" + hauteur);
+		
 		this.setTitle("Generator of Test Graph");
 		this.setSize(largeur, hauteur);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		graphEditor = new GraphEditor(500, 500);
+		//graphEditor = new GraphEditor(500 ,500);
+		graphEditor = new GraphEditor(largeur - largeur / 9 , hauteur);
 		final JPanel mainPane = new JPanel();
 		JPanel boutonPane = new JPanel();
 		boutonPane.setLayout(new GridLayout(8, 1));
