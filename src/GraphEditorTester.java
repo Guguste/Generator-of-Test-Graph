@@ -3,6 +3,7 @@
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Font;
@@ -35,14 +36,14 @@ public class GraphEditorTester extends JFrame {
 				.getScreenSize();
 		int hauteur = (int) tailleEcran.getHeight();
 		int largeur = (int) tailleEcran.getWidth();
-		//System.out.println("largeur :" + largeur + " hauteur :" + hauteur);
 		
 		this.setTitle("Generator of Test Graph");
 		this.setSize(largeur, hauteur);
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//graphEditor = new GraphEditor(500 ,500);
-		graphEditor = new GraphEditor(largeur - largeur / 9 , hauteur);
+		Rectangle r = this.getBounds();
+		graphEditor = new GraphEditor(r.width, r.height);
 		final JPanel mainPane = new JPanel();
 		JPanel boutonPane = new JPanel();
 		boutonPane.setLayout(new GridLayout(8, 1));
@@ -200,8 +201,8 @@ public class GraphEditorTester extends JFrame {
 		boutonPane.add(newRoadButton);
 		boutonPane.add(sizeOfNodes);
 
-		//mainPane.setLayout(new BorderLayout());
-		mainPane.add(boutonPane);
+		mainPane.setLayout(new BorderLayout());
+		mainPane.add(boutonPane, BorderLayout.WEST);
 		mainPane.add(graphEditor);
 		
 		panelBar.add(menuBar);
